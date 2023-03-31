@@ -1,8 +1,23 @@
 //We are creating server with the help of express ->https://expressjs.com/en/5x/api.html#express
 const express = require('express');
 const server = express();
-const data = require('./data.json');
 const PORT = 5000;
+const productRouter = require('./routes/productsRoute')
+const userRouter = require('./routes/usersRoute');
+/* const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+const products = data.products;
+const morgan = require('morgan') */
+
+//const productController = require("./controller/productController.js")
+server.use(express.json());
+//server.use(morgan('default'))
+server.use('/',productRouter.router);
+server.use('/',userRouter.router);
+
+
+/* 
+
+const data = require('./data.json');
 
 //Middleware :: 5 types 1)Application-level 2)Router-level 3)Error-handling 4)Built-in 5)Third-party
 server.use((req,res,next)=>{
@@ -10,9 +25,8 @@ server.use((req,res,next)=>{
     next(); //use to call the next point
 })
 
-
-
 //API -EndPoint - Route
+//server.get('/product/:id',(req,res){}) //url.params ?query
 server.get('/',(req,res)=>{
    // res.sendStatus(201)
     res.json({type:'GET'})
@@ -31,6 +45,54 @@ server.patch('/',(req,res)=>{
 server.delete('/',(req,res)=>{
     res.json({type:'DELETE'})
 })
+
+ */
+
+
+//server.get('/products',(req,res)=>{ res.json(products)  })
+
+//Create 
+
+/* const getProduct = (req,res)=>{
+    const id = +req.params.id;
+    const product = products.find(p => p.id === id)
+    res.status(200).json(product);
+}
+const getProducts = (req,res)=>{
+    res.status(200).json(products);
+}
+const createProduct = (req, res) => {
+    console.log(req.body);
+    products.push(req.body);
+    res.status(201).json(req.body);
+  }
+const replaceProduct = (req,res)=>{
+    const id = +req.params.id;
+    const prdouctIndex = products.findIndex(p=>p.id==id);
+    products.splice(prdouctIndex,1,{...req.body});
+    res.status(201).json('Done')
+}
+const updateProduct = (req,res)=>{
+    const id = +req.params.id;
+    const prdouctIndex = products.findIndex(p => p.id === id);
+    const product = products[prdouctIndex];
+    products.splice(prdouctIndex,1,{...product,...req.body});
+    res.status(201).json(product)
+}
+const deleteProduct = (req,res)=>{
+    const id = parseInt(req.body.id);
+    const prdouctIndex = products.findIndex((p)=>p.id === id);
+    const DeletedProduct = products.splice(prdouctIndex,1);
+    res.status(200).json(DeletedProduct);
+} */
+
+/* server.post('/products', productController.createProduct);
+server.get('/products',productController.getProducts)
+server.get('/products/:id',productController.getProduct)
+server.put('/products/:id',productController.replaceProduct)
+server.patch('/products/:id',productController.updateProduct)
+server.delete('/products/:id',productController.deleteProduct) */
+
 
 server.listen(PORT,()=>{
     console.log(`Server is listening on ${PORT}`)
