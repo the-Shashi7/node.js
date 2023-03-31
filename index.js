@@ -10,11 +10,10 @@ const morgan = require('morgan') */
 
 //const productController = require("./controller/productController.js")
 server.use(express.json());
+app.use(express.static('public'))
 //server.use(morgan('default'))
 server.use('/',productRouter.router);
 server.use('/',userRouter.router);
-
-
 /* 
 
 const data = require('./data.json');
@@ -108,6 +107,7 @@ const Ram =  require('./Feature.js');
 //import Ram from "./Feature.js";
 
 const fs = require("fs");
+
 
 //index file is read as string
 const index = fs.readFileSync('./index.html','utf-8');
