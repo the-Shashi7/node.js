@@ -1,22 +1,83 @@
 //We are creating server with the help of express ->https://expressjs.com/en/5x/api.html#express
+require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const server = express();
+const path = require('path');
 const PORT = 5000;
 const productRouter = require('./routes/productsRoute')
 const userRouter = require('./routes/usersRoute');
+const jwt = require('jsonwebtoken');
+const authRouter = require('./routes/auth')
+const fs = require('fs');
+const morgan = require('morgan')
+const publicKey = fs.readFileSync(path.resolve(__dirname,'./public.key'),'utf-8')
+
+//connecting to moongose
+const mongoose = require('mongoose');
+main().catch(err => console.log(err));
+async function main() {
+  await mongoose.connect('mongodb://127.0.0.1:27017/nodejs_coderDost');
+  console.log('database connected')
+}
+
+//Creating schema
+
+/* const productSchema = new Schema({
+      id: Number,
+      title: String,
+      description:String,
+      price: Number,
+      discountPercentage: Number,
+      rating:Number,
+      brand: String,
+      category: String,
+      thumbnail: String,
+      images: [String]
+});
+
+//Creating model
+const Product = mongoose.model('Product',productSchema); //model should be singular after it'll plural
+ */
+
+
+
 /* const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 const products = data.products;
 const morgan = require('morgan') */
+console.log('env', process.env.DB_PASSWORD,process.env.DB_USERID );
+
+//bodyParser
+const auth = (req,res,next)=>{
+    try{
+      const token = req.get('Authorization').split('Bearer ')[1];
+      console.log(token);
+      var decoded = jwt.verify(token,publicKey );
+      if(decoded.email){
+        next()
+      }else{
+        res.sendStatus(401)
+      }
+    }catch(err){
+      res.sendStatus(401)
+    }
+    console.log(decoded)
+  };
+
 
 //const productController = require("./controller/productController.js")
+server.use(cors());
 server.use(express.json());
-app.use(express.static('public'))
-//server.use(morgan('default'))
+server.use(express.urlencoded());
+server.use(morgan('default'))
+//server.use(express.static(path.resolve(__dirname,process.env.PUBLIC_DIR)))
+server.use('/auth',authRouter.router);
 server.use('/',productRouter.router);
 server.use('/',userRouter.router);
 /* 
 
 const data = require('./data.json');
+app.use(express.static('public'))
 
 //Middleware :: 5 types 1)Application-level 2)Router-level 3)Error-handling 4)Built-in 5)Third-party
 server.use((req,res,next)=>{
